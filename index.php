@@ -16,19 +16,19 @@
 
     <section class="main">
         <div class="comments">
-
+            <h1 id="reviewLocation"></h1>
             <div id="display"></div>
             <input type="text" id="inputKey">
             <button onclick="addValue()">Add Value</button>
 
             <script>
                 let myArray = [];
+                var inputKey;
 
-                function addValue() {
-                    let key = document.getElementById("inputKey").value;
-                    myArray.push(key);
-                    console.log(myArray); // for testing purposes
-                    displayArray()
+                function displayName() {
+                    let key = document.getElementById("pac-input").value;
+                    let element = document.getElementById("reviewLocation");
+                    element.textContent = "Reviews for:\n " + key;
                 }
                 function displayArray() {
                     let displayElement = document.getElementById("display");
@@ -137,6 +137,9 @@
                     place.place_id;
                     infowindowContent.children.namedItem("place-address").textContent =
                     place.formatted_address;
+
+                    inputKey = [place.geometry.location.lng(), place.geometry.location.lat()];
+                    displayName();
                     infowindow.open(map, marker);
                 });
                 }
