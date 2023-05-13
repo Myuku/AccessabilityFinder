@@ -13,9 +13,41 @@
     <section class="title">
         <h1>You're doing GREAT!</h1>
     </section>
+
     <section class="main">
         <div class="comments">
-            awdawdawe
+
+            <div id="display"></div>
+            <input type="text" id="inputKey">
+            <button onclick="addValue()">Add Value</button>
+
+            <script>
+                let myArray = [];
+
+                function addValue() {
+                    let key = document.getElementById("inputKey").value;
+                    myArray.push(key);
+                    console.log(myArray); // for testing purposes
+                    displayArray()
+                }
+                function displayArray() {
+                    let displayElement = document.getElementById("display");
+                    displayElement.innerHTML = ""; // clear the previous display
+                    for (let i = 0; i < myArray.length; i++) {
+                        let value = myArray[i];
+                        let valueElement = document.createElement("p");
+                        valueElement.textContent = value;
+                        displayElement.appendChild(valueElement);
+                    }
+                }
+            </script>
+
+
+
+
+
+
+
 
         </div>
         <div class="map">
@@ -30,7 +62,7 @@
                 &q=Space+Needle,Simon Fraser University">
             </iframe> -->
 
-        
+
             <div style="display: none">
                 <input
                     id="pac-input"
@@ -45,7 +77,7 @@
                 <strong>Place ID:</strong> <span id="place-id"></span><br />
                 <span id="place-address"></span>
             </div>
-            
+
             <script
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBq7-eWrP0E0JORqLGv14We7saZT1VciQ&callback=initMap&libraries=places&v=weekly"
                 defer
@@ -110,12 +142,12 @@
                 }
 
                 window.initMap = initMap;
-            </script>               
-           
+            </script>
+
         </div>
     </section>
 
-    
+
 
 </body>
 
