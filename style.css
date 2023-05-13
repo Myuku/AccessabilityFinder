@@ -50,6 +50,20 @@ nav img {
     width: 100%;
 }
 
-.first p {
-    font-size: 200px;
+.main {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
 }
+.comments {
+    background-color: aqua;
+    margin: 20px 0 0 20px;
+    width: 30vh;
+}
+.map {
+    flex: 1 1 10%;
+    margin: 20px 0 0 20px;
+}
+
+
