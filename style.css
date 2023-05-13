@@ -47,23 +47,31 @@ nav img {
     transition: 0.5s;
 }
 .nav-links ul li:hover::after {
-    width: 100%;
+    width: 100vh;
 }
-
+.title {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 10px;
+}
 .main {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-
+    height: 100vh;
 }
+
 .comments {
     background-color: aqua;
     margin: 20px 0 0 20px;
     width: 30vh;
+    height: inherit;
 }
 .map {
     flex: 1 1 10%;
     margin: 20px 0 0 20px;
+    height: inherit;
 }
 
 

@@ -4,7 +4,9 @@
 
 <body>
     <?php include "includes/navbar.html" ?>
-
+    <section class="title">
+        <h1>You're doing GREAT!</h1>
+    </section>
     <section class="main">
         <div class="comments">
             awdawdawe
