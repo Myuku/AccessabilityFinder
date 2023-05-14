@@ -4,42 +4,89 @@
     <head>
         <title>Place ID Finder</title>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-
         <link rel="stylesheet" type="text/css" href="./style.css" />
         <script type="module" src="./index.js"></script>
     </head>
 <body>
     <?php include "includes/navbar.html" ?>
     <section class="title">
-        <h1>You're doing GREAT!</h1>
+        <h2 letter-spacing=".2rem">Accessibility Finder!</h2>
     </section>
 
     <section class="main">
         <div class="comments">
-            <h1 id="reviewLocation"></h1>
+            <h1 id="reviewLocation">Reviews</h1>
             <div id="display"></div>
-            <input type="text" id="inputKey">
-            <button onclick="addValue()">Add Value</button>
+            <input type="number" id="ratingsInput" placeholder="Rating (1-5)">
+            <input type="text" id="reviewInput" placeholder ="Comment">
+            <button onclick="btnAddReview()">Add Review</button>
 
             <script>
                 let myArray = [];
                 var inputKey;
-
+                
                 function displayName() {
+                    getReviews();
                     let key = document.getElementById("pac-input").value;
                     let element = document.getElementById("reviewLocation");
                     element.textContent = "Reviews for:\n " + key;
                 }
+
+                function btnAddReview() {
+    
+                    const now = new Date();
+                    const year = now.getFullYear(); // return year
+                    const month = now.getMonth() + 1; // return month(0 - 11)
+                    const date = now.getDate(); // return date (1 - 31)
+                    const hours = now.getHours(); // return number (0 - 23)
+                    const minutes = now.getMinutes(); // return number (0 -59)
+                    
+                    let lon = inputKey[0];
+                    let lat = inputKey[1];
+                    let rating = document.getElementById("ratingsInput").value;
+                    let currdate = `${date}/${month}/${year}`
+                    let comment = document.getElementById("reviewInput").value;
+
+                    let arr = [lon, lat, rating, currdate, comment];
+                    myArray.push(arr);
+                    saveReviews();
+                    displayArray();
+                    
+                }
+
                 function displayArray() {
                     let displayElement = document.getElementById("display");
                     displayElement.innerHTML = ""; // clear the previous display
                     for (let i = 0; i < myArray.length; i++) {
-                        let value = myArray[i];
-                        let valueElement = document.createElement("p");
-                        valueElement.textContent = value;
-                        displayElement.appendChild(valueElement);
+                        if (myArray[i][0] == inputKey[0] && myArray[i][1] == inputKey[1]) {
+                            let value = myArray[i][3] +" | Ratings: "+ myArray[i][2] + " | Comment: "+ myArray[i][4];
+                            let valueElement = document.createElement("p");
+                            valueElement.textContent = value;
+                            displayElement.appendChild(valueElement);    
+                        }
+   
                     }
                 }
+                
+                function getReviews() {
+                    const storedArrayJSON = localStorage.getItem('reviewKey');
+                    if (storedArrayJSON != null) {
+                        
+                        // Parse the JSON string into a JavaScript array
+                        const storedArray = JSON.parse(storedArrayJSON);
+                        myArray = storedArray;
+                    }
+                    displayArray();
+                }
+                
+
+                function saveReviews() {
+                    const reviewJSON = JSON.stringify(myArray);
+
+                    // Store the JSON string in localStorage
+                    localStorage.setItem('reviewKey', reviewJSON);
+                }
+                
             </script>
 
         </div>
@@ -78,15 +125,20 @@
                 function setMarkers(map) {
                     for (let i = 0; i < markers.length; i++) {
                         let marker = markers[i];
+                        
                         let newMarker = new google.maps.Marker({
                             position: {lat: marker.geometry.location.lat(), lng: marker.geometry.location.lng()},
                             map,
                             title: marker.name
+                            
 
                         })
                         console.log(newMarker);
                     }
+                  
                 }
+
+               
 
                 function initMap() {
 
@@ -110,7 +162,37 @@
                     infowindow.setContent(infowindowContent);
 
                     const marker = new google.maps.Marker({ map: map });
+
+                    let ratingList = [];
                     
+                    for (let i = 0; i < myArray.length; i++) {
+                        if (myArray[i][0] == inputKey[0] && myArray[i][1] == inputKey[1]) {
+                            ratingList.push[myArray[i][2]];
+                        }
+                    }
+
+                    marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png')
+                 
+                    
+                    // if(calculateMeanColor(ratingList) == "blue")
+                    // {
+                    //     marker = new google.maps.Marker({
+                    //             icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                    //         });
+                    // }
+                    // else if(calculateMeanColor(ratingList) == "red")
+                    // {
+                    //     marker = new google.maps.Marker({
+                    //             icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+                    //         });
+                    // }
+                    // else
+                    // {
+                    //     marker = new google.maps.Marker({
+                    //             icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+                    //         });
+                    // }
+
                     marker.addListener("click", () => {
                         infowindow.open(map, marker);
                     });
@@ -137,11 +219,15 @@
 
                         // Set the position of the marker using the place ID and location.
                         // @ts-ignore This should be in @typings/googlemaps.
+
+                        
                         marker.setPlace({
                         placeId: place.place_id,
                         location: place.geometry.location,
+                        
                         });
                         marker.setVisible(true);
+                        
                         infowindowContent.children.namedItem("place-name").textContent = place.name;
                         infowindowContent.children.namedItem("place-id").textContent =
                         place.place_id;
@@ -150,14 +236,53 @@
                         infowindowContent.children.namedItem("place-rating").textContent = place.rating;
                         infowindowContent.children.namedItem("place-geometry-location").textContent = place.geometry.location;
                         // infowindowContent.children.namedItem("place-wheelchair-accessible-entrance").textContent = place.wheelchair_accessible_entrance;
-    
+                        
                     inputKey = [place.geometry.location.lng(), place.geometry.location.lat()];
                     displayName();
                     infowindow.open(map, marker);
                     });
+
+                    circle = new google.maps.Circile({
+                        strokeColor:"FF0000",
+                        strokeOpacity:0.8,
+                        strokeWeight:2,
+                        fillColor:"#FF0000",
+                        map:map,
+                        center:{lat:0, lng:0},
+                        radius:5000,
+
+                    })
                 }
 
                 window.initMap = initMap;
+            </script>
+
+            <script>
+
+                function calculateMeanColor(ratings) {
+                    // Calculate the mean of ratings
+                    let total = 0;
+
+                    for(var i = 0; i < ratings.length; i++) {
+                        total += ratings[i];
+                    }
+                    let mean = total/ratings.length;
+
+                    // Define the color ranges
+                    let redRange = [0, 2.5];
+                    let greenRange = [2.5, 4.5];
+                    let blueRange = [4.5, 5];
+
+                    // Determine the color based on the mean value
+                    if (mean >= redRange[0] && mean <= redRange[1]) {
+                        return "red";
+                    } else if (mean >= greenRange[0] && mean <= greenRange[1]) {
+                        return "green";
+                    } else if (mean >= blueRange[0] && mean <= blueRange[1]) {
+                        return "blue";
+                    }
+                }
+
             </script>
 
         </div>
