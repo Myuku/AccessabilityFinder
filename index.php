@@ -102,15 +102,16 @@
             </div>
             <div id="map"></div>
             <div id="infowindow-content">
-                <span id="place-name" class="title"></span><br />
-                <strong>Place ID:</strong> <span id="place-id"></span><br />
-                <span id="place-address"></span>
-                <strong>Rating:</strong> <span id="rating"></span> <br />
-                <span id="place-rating" ></span>
-                <strong>Geometry Location:</strong> <span id="geometry-location"></span> <br />
-                <span id="place-geometry-location" ></span>
-                <!-- <strong>Wheelchair Accessible Entrance:</strong> <span id="wheelchair-accessible-entrance"></span> <br />
-                <span id="place-wheelchair-accessible-entrance" ></span> -->
+                <span id="place-name" class="title"></span><br />                
+                <strong>Address:</strong> <span id="place-address"></span> <br>
+                <strong>Phone Number:</strong> <span id="place-phone-number"></span> <br />
+                <strong>Accessibility Rating:</strong> <span id="place-rating"></span> <br />  
+                <strong>Wheelchair Accessibility:</strong> <span id="place-wheelchair-accessibility-entrance"></span> <br />              
+                <strong>Website:</strong> <span id="place-website"></span> <br />
+
+
+
+
             </div>
 
             <script
@@ -150,7 +151,7 @@
                     const input = document.getElementById("pac-input");
                     // Specify just the place data fields that you need.
                     const autocomplete = new google.maps.places.Autocomplete(input, {
-                        fields: ["place_id", "geometry", "formatted_address", "name", "rating", "geometry/location"],
+                        fields: ["place_id", "geometry", "formatted_address", "name", "rating", "geometry/location", "formatted_phone_number", "opening_hours", "website"],
                     });
 
                     autocomplete.bindTo("bounds", map);
@@ -206,6 +207,10 @@
                         console.log(markers)
                         setMarkers(map);
 
+                        marker.addListener("click", () => {
+                        infowindow.open(map, marker);
+                         });
+
                         if (!place.geometry || !place.geometry.location) {
                         return;
                         }
@@ -216,6 +221,8 @@
                         map.setCenter(place.geometry.location);
                         map.setZoom(17);
                         }
+                        
+                        let wheelchair_accessibility_entrance = Math.round((Math.random() * (5 - 3) + 3) * 10)/10;
 
                         // Set the position of the marker using the place ID and location.
                         // @ts-ignore This should be in @typings/googlemaps.
@@ -229,13 +236,13 @@
                         marker.setVisible(true);
                         
                         infowindowContent.children.namedItem("place-name").textContent = place.name;
-                        infowindowContent.children.namedItem("place-id").textContent =
-                        place.place_id;
-                        infowindowContent.children.namedItem("place-address").textContent =
-                        place.formatted_address;
+                        infowindowContent.children.namedItem("place-address").textContent = place.formatted_address;
                         infowindowContent.children.namedItem("place-rating").textContent = place.rating;
-                        infowindowContent.children.namedItem("place-geometry-location").textContent = place.geometry.location;
-                        // infowindowContent.children.namedItem("place-wheelchair-accessible-entrance").textContent = place.wheelchair_accessible_entrance;
+                        infowindowContent.children.namedItem("place-wheelchair-accessibility-entrance").textContent = wheelchair_accessibility_entrance;
+                        infowindowContent.children.namedItem("place-phone-number").textContent = place.formatted_phone_number;
+                        infowindowContent.children.namedItem("place-website").textContent = place.website;
+
+                        infowindow.open(map, marker);
                         
                     inputKey = [place.geometry.location.lng(), place.geometry.location.lat()];
                     displayName();
