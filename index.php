@@ -125,6 +125,10 @@
                         console.log(markers)
                         setMarkers(map);
 
+                        marker.addListener("click", () => {
+                        infowindow.open(map, marker);
+                         });
+
                         if (!place.geometry || !place.geometry.location) {
                         return;
                         }
@@ -136,7 +140,7 @@
                         map.setZoom(17);
                         }
                         
-                        let wheelchair_accessibility_entrance = Math.round((Math.random() * (5 - 1) + 1) * 10)/10;
+                        let wheelchair_accessibility_entrance = Math.round((Math.random() * (5 - 3) + 3) * 10)/10;
 
                         // Set the position of the marker using the place ID and location.
                         // @ts-ignore This should be in @typings/googlemaps.
